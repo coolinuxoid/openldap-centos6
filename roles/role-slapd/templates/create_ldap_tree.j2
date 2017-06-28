@@ -13,7 +13,7 @@ ou: users
 dn: ou=groups,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
 objectClass: organizationalUnit
 objectClass: top
-ou: group
+ou: groups
 
 dn: uid=testuser,ou=users,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
 objectClass: top

@@ -1,19 +1,11 @@
 ---
 - name: Installing and configuring openldap server
   hosts: centos6.localhost
-  vars:
-    openldap_server: centos6.localhost
-    openldap_domain: example.com
-    openldap_cert_organization: EXAMPLE
   roles:
     - role-slapd
     - role-ldaputils
 
-
 - name: Installing and configuring openldap client
   hosts: centos6-all
-  vars:
-    openldap_server: centos6.localhost
-    openldap_domain: example.com
   roles:
     - role-sssd

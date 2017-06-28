@@ -3,4 +3,24 @@ dn: cn=testgroup,ou=groups,dc=nurlan,dc=az
 changetype: modify
 delete: memberUid
 memberUid: nurlan
+memberUid: boss
+
+dn: cn=admingroup,ou=groups,dc=nurlan,dc=az
+changetype: modify
+delete: memberUid
+memberUid: nurlan
+
+
+
+
+
+dn: cn=admingroup,ou=groups,dc=nurlan,dc=az
+changetype: modify
+delete: memberUid
+memberUid: testuser
+
+dn: cn=admingroup,ou=groups,dc=nurlan,dc=az
+changetype: modify
+delete: memberUid
+memberUid: boss
 

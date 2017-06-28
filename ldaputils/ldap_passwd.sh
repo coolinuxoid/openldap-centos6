@@ -2,7 +2,7 @@
 #
 # Description : Script to reset openldap user password
 #
-
+#
 
 usage() { echo "Usage: $0  -u <user>  <password> " 1>&2; exit 1; }
 
@@ -31,5 +31,4 @@ echo "password is changed for : $UID_NUMBER"
 else
 echo "Cannot change password for $UID_NUMBER=$?"
 exit 1
-fi
 

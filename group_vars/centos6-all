@@ -1,6 +1,6 @@
 openldap_server: centos6.localhost
-openldap_domain: example.com
-openldap_cert_organization: EXAMPLE
+openldap_domain: nurlan.az
+openldap_cert_organization: NURLAN
 openldap_rootpw: ldaprootpw
 openldap_keypw: testphrase
 openldap_testpw: testpass

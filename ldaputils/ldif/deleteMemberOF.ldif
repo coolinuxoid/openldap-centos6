@@ -1,0 +1,5 @@
+# this sample ldif file deletes memberOf from user
+dn: uid=testuser,ou=users,dc=nurlan,dc=az
+changetype: modify
+delete: memberOf
+memberOf: admingroup

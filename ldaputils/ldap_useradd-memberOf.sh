@@ -1,4 +1,3 @@
-{% set domainList = openldap_domain.split('.') %}
 #!/bin/bash
 #
 # Description : Script to add users to local openldap
@@ -33,7 +32,7 @@ USER_NAME=$1
 
 # Get GID Number from ldap
 GID_NUMBER=$(ldapsearch -c -Q -Y EXTERNAL -H ldapi:/// \
--b "ou=groups,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}" \
+-b "ou=groups,dc=nurlan,dc=az" \
 cn=${PRIMARY_GROUP} gidNumber |  grep -P -o '(?<=gidNumber: )[0-9]*' )
 
 if [ $? -eq 0 ];then
@@ -48,7 +47,7 @@ fi
 LDIF_FILE=$(mktemp)
 
 echo "
-dn: uid=${USER_NAME},ou=users,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
+dn: uid=${USER_NAME},ou=users,dc=nurlan,dc=az
 objectClass: top
 objectClass: account
 objectClass: posixAccount
@@ -66,7 +65,7 @@ shadowWarning: 0
 " >> $LDIF_FILE
 
 echo "
-dn: uid=${USER_NAME},ou=users,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
+dn: uid=${USER_NAME},ou=users,dc=nurlan,dc=az
 changetype: modify
 add: memberOf
 memberOf: ${PRIMARY_GROUP}
@@ -74,16 +73,16 @@ memberOf: ${PRIMARY_GROUP}
 
 for OTHGROUP in ${OTHER_GROUPS/,/ }
 do
-        ldapsearch -c -Q -Y EXTERNAL -H ldapi:/// -b "cn=${OTHGROUP},ou=groups,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}" > /dev/null 2>&1
+        ldapsearch -c -Q -Y EXTERNAL -H ldapi:/// -b "cn=${OTHGROUP},ou=groups,dc=nurlan,dc=az" > /dev/null 2>&1
         if [ $? -eq 0 ]
         then
                 echo "
-dn: cn=${OTHGROUP},ou=groups,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
+dn: cn=${OTHGROUP},ou=groups,dc=nurlan,dc=az
 changetype: modify
 add: memberuid
 memberuid: ${USER_NAME}
 
-dn: uid=${USER_NAME},ou=users,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
+dn: uid=${USER_NAME},ou=users,dc=nurlan,dc=az
 changetype: modify
 add: memberOf
 memberOf: ${OTHGROUP}

@@ -22,3 +22,9 @@
   template: src=ldap_passwd.j2 dest=/root/ldaputils/ldap_passwd.sh mode=0700
   tags:
     - ldaputils
+
+- name: Deploy ldap_setUserMemberofGroup script
+  template: src=ldap_setUserMemberofGroup.j2 dest=/root/ldaputils/ldap_setUserMemberofGroup.sh mode=0700
+  tags:
+    - ldaputils
+
