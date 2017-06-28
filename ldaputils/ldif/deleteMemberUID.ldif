@@ -1,3 +1,4 @@
+# this sample ldif file deletes memberUid from group
 dn: cn=testgroup,ou=groups,dc=nurlan,dc=az
 changetype: modify
 delete: memberUid

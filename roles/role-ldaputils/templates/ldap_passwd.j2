@@ -1,50 +1,35 @@
 {% set domainList = openldap_domain.split('.') %}
 #!/bin/bash
 #
-# Description : Script to change 
+# Description : Script to reset openldap user password
+#
 #
 
+usage() { echo "Usage: $0  -u <user>  <password> " 1>&2; exit 1; }
 
-usage() { echo "Usage: $0  <username>" 1>&2; exit 1; }
+while getopts "u:p:" o; do
+    case "${o}" in
+        u)
+            UID_NUMBER=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
 
-
-if [ -z "${1}" ]; then
+if [ -z "${UID_NUMBER}" ]||[ -z "$1" ]; then
     usage
 fi
 
-USER_NAME=$1
+PASS=$1
 
+ldappasswd -v -Q -Y EXTERNAL -H ldapi:/// -s ${PASS}  "uid=${UID_NUMBER},ou=users,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}"
 
-LDIF_FILE=$(mktemp)
+if [ $? -eq 0 ];then
+echo "password is changed for : $UID_NUMBER"
+else
+echo "Cannot change password for $UID_NUMBER=$?"
+exit 1
 
-echo "
-dn: uid=${USER_NAME},ou=users,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
-objectClass: top
-objectClass: account
-objectClass: posixAccount
-objectClass: shadowAccount
-cn: ${USER_NAME}
-uid: ${USER_NAME}
-uidNumber: ${UID_NUMBER}
-gidNumber: ${GID_NUMBER}
-homeDirectory: /home/${USER_NAME}
-loginShell: /bin/bash
-userPassword: 
-shadowLastChange: 0
-shadowMax: 0
-shadowWarning: 0
-" >> $LDIF_FILE
-
-for i in ${OTHER_GROUPS/,/ }
-do
-echo "
-dn: cn=$i,ou=groups,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
-changetype: modify
-add: memberuid
-memberuid: ${USER_NAME}
-" >> $LDIF_FILE 
-done
-
-
-ldapadd -v -c -Q -Y EXTERNAL -H ldapi:/// -f $LDIF_FILE
-rm $LDIF_FILE
