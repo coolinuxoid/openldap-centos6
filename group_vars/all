@@ -1,0 +1,20 @@
+openldap_server: centos6.localhost
+openldap_domain: example.com
+openldap_cert_organization: EXAMPLE
+openldap_domain: example.com
+openldap_rootpw: ldaprootpw
+openldap_keypw: testphrase
+openldap_testpw: testpass
+openldap_cert_country: PL
+openldap_cert_state: NA
+openldap_cert_loc: Bydgoszcz
+
+openldap_client_packages:
+    - sssd
+    - sssd-ldap
+    - oddjob-mkhomedir
+
+openldap_client_services:
+    - sssd
+    - messagebus
+    - oddjobd

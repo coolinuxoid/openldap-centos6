@@ -1,0 +1,44 @@
+{% set domainList = openldap_domain.split('.') %}
+dn: olcDatabase={2}bdb,cn=config
+changetype: modify
+replace: olcSuffix
+olcSuffix: {% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
+
+dn: olcDatabase={2}bdb,cn=config
+changetype: modify
+replace: olcRootDN
+olcRootDN: cn=Manager,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
+
+dn: olcDatabase={2}bdb,cn=config
+changetype: modify
+replace: olcRootPW
+olcRootPW: {{ openldap_gen_pass.stdout }}
+
+dn: cn=config
+changetype: modify
+replace: olcIdleTimeout
+olcIdleTimeout: 60
+
+dn: cn=config
+changetype: modify
+delete: olcAllows
+
+dn: cn=config
+changetype: modify
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/openldap/certs/nurlanldap.crt 
+
+dn: cn=config
+changetype: modify
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/openldap/certs/nurlanldap.key
+
+
+dn: olcDatabase={2}bdb,cn=config
+add: olcAccess
+olcAccess: {0}to attrs=userPassword,shadowLastChange by dn="cn=Manager,{% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}" write by anonymous auth by self write by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * none
+
+dn: olcDatabase={2}bdb,cn=config
+add: olcAccess
+olcAccess: {1}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * read
+

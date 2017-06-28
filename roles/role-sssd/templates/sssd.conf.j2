@@ -1,0 +1,37 @@
+{% set domainList = openldap_domain.split('.') %}
+
+# {{ ansible_managed }}
+{# one domain, no reason for multiple at time of writing #}
+[domain/nurlanldap]
+enumerate = true
+cache_credentials = TRUE
+
+id_provider = ldap
+auth_provider = ldap
+chpass_provider = ldap
+
+ldap_uri = ldap://{{ openldap_server }}
+ldap_search_base = {% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
+#tls_reqcert = never
+ldap_tls_cacert = /etc/openldap/certs/nurlanldap.crt
+[sssd]
+services = nss, pam, autofs
+config_file_version = 2
+
+domains = nurlanldap
+
+[nss]
+homedir_substring = /home
+
+[pam]
+
+[sudo]
+
+[autofs]
+
+[ssh]
+
+[pac]
+
+[ifp]
+

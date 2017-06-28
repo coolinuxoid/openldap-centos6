@@ -1,0 +1,47 @@
+---
+# tasks file for ocs.slapd
+- name: Install slapd packages
+  yum: name={{ item }} state=present
+  with_items:
+    - openldap-servers
+    - openldap-clients
+
+- name: Start slapd
+  service: name=slapd enabled=yes state=started
+
+
+- name: Generate the private key for certificate request
+  shell: openssl genrsa -aes256 -passout pass:{{ openldap_keypw }} -out exaldap_encr.key 1024 chdir=/etc/openldap/certs/ 
+         creates=/etc/openldap/certs/exaldap_encr.key
+
+- name: Strip the passphrase from the key 
+  shell: openssl rsa -in exaldap_encr.key -passin pass:{{ openldap_keypw }} -out exaldap.key chdir=/etc/openldap/certs/ 
+         creates=/etc/openldap/certs/exaldap.key
+- name: Create and sign the the new certificate 
+  shell: openssl req -new -x509 -subj '/C={{ openldap_cert_country }}/ST={{ openldap_cert_state }}/L={{ openldap_cert_loc }}/O={{ openldap_cert_organization }}/CN={{ openldap_server }}/' -days 3650 -key exaldap.key -out exaldap.crt -extensions v3_ca   chdir=/etc/openldap/certs/  creates=/etc/openldap/certs/exaldap.crt
+
+- name: Generate the root password for ldap
+  shell: slappasswd -s {{ openldap_rootpw }} 
+  register: openldap_gen_pass
+
+- name: Generate the password for test ldap user
+  shell: slappasswd -s {{ openldap_testpw }} 
+  register: openldap_gen_testpw
+
+- name: Deploy init ldif
+  template: src=init_ldap.j2 dest=/tmp/init_ldap.ldif
+
+- name: Deploy create tree ldif
+  template: src=create_ldap_tree.j2 dest=/tmp/create_ldap_tree.ldif
+
+- name: Initialize ldap
+  shell: ldapmodify -v -c -Q -Y EXTERNAL -H ldapi:/// -f /tmp/init_ldap.ldif >> /tmp/init_ldap.log 2>&1
+  ignore_errors: yes
+  args:
+    creates: /tmp/init_ldap.log
+
+- name: Create ldap root tree
+  shell: ldapadd -v -c -Q -Y EXTERNAL -H ldapi:/// -f /tmp/create_ldap_tree.ldif >> /tmp/create_ldap_tree.ldif.log 2>&1
+  ignore_errors: yes
+  args:
+    creates: /tmp/create_ldap_tree.ldif.log

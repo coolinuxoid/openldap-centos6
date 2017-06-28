@@ -1,0 +1,18 @@
+---
+# tasks file for ocs.ldaputils
+- name: Create directory for ldap utils
+  file: path=/root/ldaputils state=directory mode=0700
+  tags:
+    - ldaputils
+- name: Deploy ldap groupadd script
+  template: src=ldap_groupadd.j2 dest=/root/ldaputils/ldap_groupadd.sh mode=0700
+  tags:
+    - ldaputils
+- name: Deploy ldap useradd script
+  template: src=ldap_useradd.j2 dest=/root/ldaputils/ldap_useradd.sh mode=0700
+  tags:
+    - ldaputils
+- name: Deploy ldap_passwd script
+  template: src=ldap_passwd.j2 dest=/root/ldaputils/ldap_passwd.sh mode=0700
+  tags:
+    - ldaputils
