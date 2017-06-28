@@ -12,6 +12,12 @@
   template: src=ldap_useradd.j2 dest=/root/ldaputils/ldap_useradd.sh mode=0700
   tags:
     - ldaputils
+
+- name: Deploy ldap useradd with memberOf attribute script
+  template: src=ldap_useradd-memberOf.j2 dest=/root/ldaputils/ldap_useradd-memberOf.sh mode=0700
+  tags:
+    - ldaputils
+
 - name: Deploy ldap_passwd script
   template: src=ldap_passwd.j2 dest=/root/ldaputils/ldap_passwd.sh mode=0700
   tags:
