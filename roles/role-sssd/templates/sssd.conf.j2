@@ -10,6 +10,10 @@ id_provider = ldap
 auth_provider = ldap
 chpass_provider = ldap
 
+#filter users with below parameters 
+#access_provider = ldap
+##ldap_access_filter = gidNumber=1500
+
 ldap_uri = ldap://{{ openldap_server }}
 ldap_search_base = {% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
 #tls_reqcert = never
