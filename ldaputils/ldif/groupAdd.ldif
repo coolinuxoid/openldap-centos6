@@ -1,4 +1,0 @@
-dn: cn=testgroup,ou=groups,dc=nurlan,dc=az
-objectClass: top
-objectClass: posixGroup
-gidNumber: 1500
