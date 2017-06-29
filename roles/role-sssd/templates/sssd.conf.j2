@@ -10,9 +10,13 @@ id_provider = ldap
 auth_provider = ldap
 chpass_provider = ldap
 
-#filter users with below parameters 
+### filter users with below parameters, after change "service sssd restart" is needed
 #access_provider = ldap
-##ldap_access_filter = gidNumber=1500
+#ldap_access_filter = gidNumber=1500
+
+### for multiple groups
+#ldap_access_filter = (|(gidNumber=1500)(gidNumber=1555))
+
 
 ldap_uri = ldap://{{ openldap_server }}
 ldap_search_base = {% for d in domainList[:-1] %}dc={{ d }},{% endfor %}dc={{ domainList[-1] }}
