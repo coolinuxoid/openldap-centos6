@@ -31,4 +31,4 @@ echo "password is changed for : $UID_NUMBER"
 else
 echo "Cannot change password for $UID_NUMBER=$?"
 exit 1
-
+fi

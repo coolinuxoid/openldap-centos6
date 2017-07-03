@@ -1,0 +1,19 @@
+# This ldif file adds "memberOf" attribute to 'cn={8}nis,cn=schema,cn=config'
+# deletes "posixAccount" objectclass, then adds again with "memberOf" attribute
+# Run "ldapmodify -v -a -c -Q -Y EXTERNAL -H ldapi:/// -f addMemberOfattribute.ldif" command to apply this ldif  
+dn: cn={8}nis,cn=schema,cn=config
+changetype: modify
+delete: olcAttributeTypes
+olcAttributeTypes: {25}
+-
+delete: olcObjectClasses
+olcObjectClasses: {12}
+-
+add: olcObjectClasses
+olcObjectClasses: ( 1.3.6.1.1.1.2.0 NAME 'posixAccount' 
+ DESC 'Abstraction of an account with POSIX attributes' 
+ SUP top 
+ AUXILIARY 
+ MUST ( cn $ uid $ uidNumber $ gidNumber $ homeDirectory ) 
+ MAY ( userPassword $ loginShell $ gecos $ description ) 
+ )
