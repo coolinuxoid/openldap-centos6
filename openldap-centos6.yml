@@ -1,6 +1,6 @@
 ---
 - name: Installing and configuring openldap server
-  hosts: centos6.localhost
+  hosts: openldap-servers
   roles:
     - role-slapd
     - role-ldaputils

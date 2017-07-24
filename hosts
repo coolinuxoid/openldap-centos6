@@ -1,3 +1,7 @@
+[openldap-servers]
+centos6.localhost
+
 [centos6-all]
 centos6.localhost
 centos6-stby.localhost
+strong.localhost

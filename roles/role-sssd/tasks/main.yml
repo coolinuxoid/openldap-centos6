@@ -6,7 +6,7 @@
     state: latest
   with_items: "{{ openldap_client_packages }}"
 
-- name: Copy Exalogic ldap certificate
+- name: Copy Openldap server certificate
   copy: src=/etc/openldap/certs/nurlanldap.crt dest=/etc/openldap/certs/ owner=root group=root mode=0644 force=yes
   tags: copy-crt
 - name: Copy SSSD configuration file
